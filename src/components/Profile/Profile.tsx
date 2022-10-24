@@ -5,9 +5,13 @@ var profile = (props: any) => {
     var username = props.username;
     var isLoggedIn = props.isLoggedIn;
     var showCollaborators = props.showCollaborators;
+    let filteredCollaborators: any[] = [];
+
+    const [search, setSearch] = useState<string>('');
 
     if (showCollaborators) {
         var [collaborators, setcollaborators] = useState<IUser[]>([]);
+        filteredCollaborators = search ? collaborators.filter(collab => collab.name.includes(search)) : collaborators;
 
         useEffect(() => {
             (async () => {
@@ -28,8 +32,9 @@ var profile = (props: any) => {
                 ) : (
                     <>
                         <div data-testid="username">Hi {username}! Below, your list of collaborators</div>
+                        <input value={search} onChange={(event) => setSearch(event.target.value)}/>
                         <ul data-testid="address-list">
-                            {collaborators.map((collaborator: IUser) => (
+                            {filteredCollaborators.map((collaborator: IUser) => (
                                 <>
                                 <h1>{collaborator.name}</h1>
                                 <div>{collaborator.address.suite + collaborator.address.street + collaborator.address.city}</div>
